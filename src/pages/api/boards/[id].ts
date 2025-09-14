@@ -1,0 +1,147 @@
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
+
+import { Board } from '../../../context/BoardContext';
+
+import {
+  BOARDS_COLLECTION,
+  CARDS_COLLECTION,
+  LISTS_COLLECTION,
+} from '../../../utils/constants';
+import { find, remove, removeMany, update } from '../../../utils/database';
+import { sessionReturn } from '../../../utils/interfaces';
+interface patchBody {
+  field: string;
+  value: string;
+}
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  const session = (await getSession({ req })) as unknown as sessionReturn;
+
+  const requestType = req.method;
+  switch (requestType) {
+    case 'GET': {
+      const { id } = req.query;
+      if (!id) {
+        res.status(400).send({ error: 'Missing boardId' });
+        return;
+      }
+      const board: Board[] = await find(
+        BOARDS_COLLECTION,
+        new ObjectId(String(id)),
+      );
+      if (board.length === 0) {
+        res.status(404).send({ error: 'Board not found' });
+        return;
+      }
+
+      const lists = await find(
+        LISTS_COLLECTION,
+        {
+          boardId: String(board[0].id),
+          closed: false,
+        },
+        [],
+        { position: 1 },
+      );
+      const cards = await find(
+        CARDS_COLLECTION,
+        {
+          boardId: String(board[0].id),
+          closed: false,
+        },
+        [],
+        { position: 1 },
+      );
+
+      res.send({ ...board[0], lists, cards });
+      return;
+    }
+
+    case 'PATCH': {
+      if (!session?.user?.userId) {
+        res.status(403).send({ error: 'Bad author id' });
+        return;
+      }
+
+      const { field, value } = req.body as patchBody;
+      const { id } = req.query;
+      if (!field || value.length === 0 || !id) {
+        res.status(400).send({ error: 'Bad request' });
+        return;
+      }
+
+      let data;
+      if (field === 'background') {
+        data = {
+          bgcolor: value ?? 'rgb(210, 144, 52)',
+        };
+      } else if (field === 'title') {
+        data = {
+          title: value ?? 'My board',
+        };
+      } else if (field === 'isPublic') {
+        data = {
+          isPublic: value,
+        };
+      } else if (field === 'permissionList') {
+        data = {
+          permissionList: value,
+        };
+      }
+
+      const isBoardUpdated = await update(
+        BOARDS_COLLECTION,
+        {
+          _id: new ObjectId(String(id)),
+          author: new ObjectId(String(session.user.userId)),
+        },
+        data,
+      );
+      if (isBoardUpdated) {
+        res.status(200).send({ success: true });
+      } else {
+        res.status(404).send({ success: false });
+      }
+      return;
+    }
+
+    case 'DELETE': {
+      if (!session?.user?.userId) {
+        res.status(403).send({ error: 'Bad author id' });
+        return;
+      }
+      const { id } = req.query;
+
+      const deleteBoard = await remove(BOARDS_COLLECTION, {
+        id: String(id),
+        author: String(session.user.userId),
+      });
+
+      const deleteLists = await removeMany(LISTS_COLLECTION, {
+        boardId: String(id),
+        authorId: String(session.user.userId),
+      });
+
+      const deleteCards = await removeMany(CARDS_COLLECTION, {
+        boardId: String(id),
+        authorId: String(session.user.userId),
+      });
+
+      if (deleteBoard && deleteLists && deleteCards) {
+        res.status(200).send({ success: true });
+        return;
+      } else {
+        res.status(404).send({ success: false });
+        return;
+      }
+    }
+
+    default:
+      res.status(400).send({ error: 'Bad request' });
+      return;
+  }
+}

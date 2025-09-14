@@ -1,0 +1,154 @@
+.columnWrapper {
+  width: 272px;
+  margin: 0 4px;
+  height: 100vh;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.column {
+  margin: 8px 4px;
+  width: 272px;
+  background-color: #ebecf0;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+  max-height: 100%;
+  position: relative;
+  white-space: normal;
+}
+.column > div {
+  margin: 8px;
+}
+.inputTitle {
+  width: 100%;
+  padding: 8px;
+  resize: none;
+  overflow: hidden;
+}
+.title {
+  display: flex;
+  align-items: center;
+
+  flex: 0 0 auto;
+  padding: 10px 8px;
+  position: relative;
+  min-height: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.column:hover > div > div {
+  /* display: block; */
+  opacity: 1;
+}
+.title > div {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  align-self: flex-end;
+  opacity: 0;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+.title > div:hover {
+  background: rgba(9, 30, 66, 0.08);
+}
+.title > div:hover > svg {
+  fill: currentColor;
+  fill-opacity: 0.5;
+}
+
+.droppable {
+  flex: 1 1 auto;
+  margin-bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 4px;
+  padding: 0 4px;
+  min-height: 0;
+}
+
+.droppable::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.droppable::-webkit-scrollbar-track-piece {
+  background: rgba(9, 30, 66, 0.08);
+  border-radius: 4px;
+}
+
+.droppable::-webkit-scrollbar-thumb {
+  background: rgba(9, 30, 66, 0.13);
+  border-radius: 4px;
+  display: block;
+  height: 48px;
+}
+
+.footerColumn.hidden {
+  display: none;
+}
+.footerColumn {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.footerColumn button {
+  cursor: pointer;
+  box-shadow: none;
+  width: 100%;
+  border: none;
+  border-radius: 3px;
+  padding: 8px;
+  text-align: left;
+  user-select: none;
+  transition: 300ms;
+}
+.openForm {
+  display: flex;
+  align-items: center;
+
+  color: #5e6c84;
+}
+.openForm svg {
+  margin-right: 6px;
+}
+.openForm:hover {
+  background-color: rgba(9, 30, 66, 0.08);
+  color: #172b4d;
+}
+
+.TextareaWrapper {
+  background-color: #fff;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgb(9 30 66 / 25%);
+  margin-bottom: 8px;
+  min-height: 60px;
+  position: relative;
+  padding: 6px 8px 2px;
+}
+
+.AutoTextarea {
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+}
+.AutoTextarea:focus {
+  outline: 0;
+}
+
+.addCard {
+  background-color: #5aac44;
+  color: #fff;
+}
+
+.addCard:hover {
+  background-color: #61bd4f;
+}

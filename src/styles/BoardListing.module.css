@@ -1,0 +1,10 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+  min-height: 100vh;
+  background-color: #fafbfc;
+}

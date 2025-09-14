@@ -1,0 +1,60 @@
+if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
+  require('../mocks');
+}
+import { SessionProvider } from 'next-auth/react';
+import HeadNext from 'next/head';
+
+import { BoardContextProvider } from '../context/BoardContext';
+import { CardsContextProvider } from '../context/CardsContext';
+import { ListContextProvider } from '../context/ListsContext';
+import { ModalContextProvider } from '../context/ModalContext';
+import ProtectedRoute from '../router/ProtectedRoute';
+import '../styles/globals.css';
+
+function MyApp({ Component, pageProps, router }) {
+  return (
+    <>
+      <HeadNext>
+        <title>Kanban</title>
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0079bf" />
+        <meta name="apple-mobile-web-app-title" content="Kanban" />
+        <meta name="application-name" content="Kanban" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+      </HeadNext>
+      <SessionProvider session={pageProps.session}>
+        <BoardContextProvider>
+          <ListContextProvider>
+            <CardsContextProvider>
+              <ModalContextProvider>
+                <ProtectedRoute router={router}>
+                  <Component {...pageProps} />
+                </ProtectedRoute>
+              </ModalContextProvider>
+            </CardsContextProvider>
+          </ListContextProvider>
+        </BoardContextProvider>
+      </SessionProvider>
+    </>
+  );
+}
+
+export default MyApp;
