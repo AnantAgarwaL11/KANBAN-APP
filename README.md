@@ -56,8 +56,8 @@ A modern, full-stack Kanban board application built with Next.js, featuring real
 
 1. **Clone and Setup**
    ```bash
-   git clone https://github.com/Rawallon/trello-clone-next.git
-   cd trello-clone-next
+   https://github.com/AnantAgarwaL11/KANBAN-APP.git
+   cd KANBAN-APP
    npm install
    ```
 
